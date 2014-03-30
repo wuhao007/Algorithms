@@ -1,6 +1,6 @@
 /*************************************************************************
- * Name: Mariano Simone
- * Email: mljsimone@gmail.com
+ * Name:
+ * Email:
  *
  * Compilation:  javac Point.java
  * Execution:
@@ -13,22 +13,22 @@
 import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
-    
+
     // compare points by slope
-    public final Comparator<Point> SLOPE_ORDER = new SlopeOrder();
-    
+    public final Comparator<Point> SLOPE_ORDER = new BySlope(); 
+
     private final int x;                              // x coordinate
     private final int y;                              // y coordinate
-    
-    private class SlopeOrder implements Comparator<Point> {
-        public int compare(Point point1, Point point2) {
-            // Calculate the slope of the point <this> points to with the <point1>
-            double slope1 = slopeTo(point1);
+
+    private class BySlope implements Comparator<Point> {
+        public int compare(Point p1, Point p2) {
+            if (slopeTo(p1) < slopeTo(p2)) {
+                return -1;
+            } else if (slopeTo(p1) > slopeTo(p2)) {
+                return 1;
+            }
             
-            // Calculate the slope of the point <this> point to with the <point2>
-            double slope2 = slopeTo(point2);
-            
-            return Double.compare(slope1, slope2);
+            return 0;
         }
     }
     
@@ -53,43 +53,26 @@ public class Point implements Comparable<Point> {
 
     // slope between this point and that point
     public double slopeTo(Point that) {
-        
-        // Degenerate line segments
-        if (that.x == x && that.y == y)
-            return Double.NEGATIVE_INFINITY;
-        
-        double dx = that.x - x,
-               dy = that.y - y;
-               
-        // Horizontal line segments    
-        if (dy == 0.0)
-            return +0.0;
-        
-        // Vertical line segments
-        if (dx == 0.0)
-            return Double.POSITIVE_INFINITY;
-        
-        return dy / dx;
+        if (that.x == this.x) {
+            if (that.y == this.y) {
+                return Double.NEGATIVE_INFINITY;
+            }
+            return Double.POSITIVE_INFINITY;    
+        }
+        if (that.y == this.y) {
+            return 0.0;
+        }
+        return (double) (that.y - this.y) / (double) (that.x - this.x);
     }
 
     // is this point lexicographically smaller than that one?
     // comparing y-coordinates and breaking ties by x-coordinates
     public int compareTo(Point that) {
+        if (that.y != this.y) {
+           return this.y - that.y; 
+        }
         
-        // Avoid excessive property lookups
-        int x0 = x, x1 = that.x,
-            y0 = y, y1 = that.y;
-            
-        // this is less than that
-        if (y0 < y1 || (y0 == y1 && x0 < x1))
-            return -1;
-        
-        // this is equal to that
-        if (x0 == x1 && y0 == y1)
-            return 0;
-        
-        // this is greater than that
-        return 1;
+        return this.x - that.x;
     }
 
     // return string representation of this point
@@ -97,26 +80,9 @@ public class Point implements Comparable<Point> {
         /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
     }
-    
-    // Unit test
+
+    // unit test
     public static void main(String[] args) {
-        Point point1, point2;
-        
-        /* Vertical line segments should be +Infinity */
-        point1 = new Point(5, 10);
-        point2 = new Point(5, 7);
-        assert point1.slopeTo(point2) == Double.POSITIVE_INFINITY
-            : "Vertical line segments should be +Infinity";
-            
-        /* Horizontal line segments should be +0.0 */
-        point1 = new Point(12, 3);
-        point2 = new Point(3, 3);
-        assert point1.slopeTo(point2) == +0.0
-            : "Horizontal line segments should be +0.0";
-            
-        /* The slope of a point with himself should be -Infinity */
-        Point p = new Point(1, 5);
-        assert p.slopeTo(p) == Double.NEGATIVE_INFINITY
-            : "The slpe of a point with himself should be -Infinity";
+        /* YOUR CODE HERE */
     }
 }

@@ -1,106 +1,84 @@
-/*************************************************************************
- * Name: Mariano Simone
- * Email: mljsimone@gmail.com
- *
- * Compilation:  javac Brute.java
- * Execution: java Brute
- * Dependencies: StdDraw.java Point.java
- *
- * Description: Find all collinear points in a given set
- *
- *************************************************************************/
 
+
+/**
+ * @author brlv
+ *
+ */
 public class Brute {
     
-    public static void main(String[] args) {
+    /**
+     * @param pointInfo
+     * @return point object
+     */
+    private static Point createPoint(String pointInfo) {
+        String[] point = pointInfo.trim().split("\\s+");
+        if (point.length != 2) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        int x = Integer.parseInt(point[0]);
+        int y = Integer.parseInt(point[1]);
         
-        int n = 0;
+        return new Point(x, y);
+    }
+    
+    /**
+     * @param args file path.
+     * @return point array.
+     */
+    private static Point[] load(String[] args) {
+        In in = new In(args[0]);
+        int pointNumber = Integer.parseInt(in.readLine());
         
-        In inputFile;
-        Point[] points;
+        Point[] points = new Point[pointNumber];
+        int index = 0;
         
-        Point p, q, r, s;
-        double slopepq, slopepr, slopeps;
-        
-        inputFile = new In(args[0]);
-        
-        // How many points do we have in the input file?
-        n = inputFile.readInt();
-        
-        // Allocate enough space for them
-        points = new Point[n];
-        
-        // Rescale coordinate system for proper visualization.
-        StdDraw.setXscale(0, 32768);
-        StdDraw.setYscale(0, 32768);
-        
-        for (int i = 0; !inputFile.isEmpty(); i++) {
-            int x = inputFile.readInt();
-            int y = inputFile.readInt();
-            
-            points[i] = new Point(x, y);
+        if (pointNumber > 0) {
+            while (!in.isEmpty() && index < pointNumber) {
+                String line = in.readLine();
+                if (line.trim().length() == 0) {
+                    continue;
+                }
+                points[index++] = createPoint(line);
+            }
         }
         
-        for (int l0 = 0; l0 < n; l0++) {
-            
-            p = points[l0];
-            p.draw();
-            
-            for (int l1 = 0; l1 < n; l1++) {
-                
-                if (l1 == l0)
-                    continue;
-                
-                q = points[l1];    
-                slopepq = p.slopeTo(q);
-                
-                // To print only the combination of points
-                // that go in ascending order
-                if (p.compareTo(q) > -1)
-                    continue;
-                
-                for (int l2 = 0; l2 < n; l2++) {
-                    
-                    if (l2 == l1)
-                        continue;
-                    
-                    r = points[l2];
-                    
-                    // To print only the combination of points
-                    // that go in ascending order
-                    if (q.compareTo(r) > -1)
-                        continue;
-                    
-                    slopepr = p.slopeTo(r);
-                    
-                    // if p, q and r aren't collinear, skip the rest.
-                    if (slopepq != slopepr)
-                        continue;
-                    
-                    for (int l3 = 0; l3 < n; l3++) {                        
+        in.close();
+        return points;
+    }
+    
+    /**
+     * @param args file path which contains points info.
+     */
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        
+        Point[] points = load(args);
+        int pointNumber = points.length;
+
+        Quick.sort(points);
+        
+        for (int i = 0; i < pointNumber - 3; i++) {
+            Point p1 = points[i];
+            for (int j = i + 1; j < pointNumber - 2; j++) {
+                Point p2 = points[j];
+                for (int k = j + 1; k < pointNumber - 1; k++) {
+                    Point p3 = points[k];
+                    for (int l = k + 1; l < pointNumber; l++) {
+                        Point p4 = points[l];
+                        if ((p1.slopeTo(p2) == p1.slopeTo(p3))
+                                && (p1.slopeTo(p2) == p1.slopeTo(p4))) {
+                            StdOut.println(p1 + " -> " + p2 
+                                    + " -> " + p3 + " -> " + p4);
+                            
+                            p1.drawTo(p4);
+                        }
                         
-                        if (l3 == l2)
-                            continue;
-                        
-                        s = points[l3];
-                        
-                        // To print only the combination of points
-                        // that go in ascending order
-                        if (r.compareTo(s) > -1)
-                            continue;
-                        
-                        slopeps = p.slopeTo(s);
-                        
-                        // To print only the combination of points
-                        // that go in ascending order
-                        if (slopepq != slopeps)
-                            continue;
-                        
-                        p.drawTo(s);
-                        StdOut.println(p + " -> " + q + " -> " + r + " -> " + s);
                     }
                 }
             }
         }
     }
 }
+

@@ -1,104 +1,124 @@
-/*************************************************************************
- * Name: Mariano Simone
- * Email: mljsimone@gmail.com
- *
- * Compilation:  javac Fast.java
- * Execution: java Fast
- * Dependencies: StdDraw.java Point.java
- *
- * Description: Find all collinear points in a given set with the help of a sort
- *
- *************************************************************************/
-
 import java.util.Arrays;
 
+
+/**
+ * @author brlv
+ *
+ */
 public class Fast {
     
+    /**
+     * collinear points number
+     */
+    private static int COLNUM = 4;
+    
+    /**
+     * @param pointInfo.
+     * @return point object.
+     */
+    private static Point createPoint(String pointInfo) {
+        String[] point = pointInfo.trim().split("\\s+");
+        if (point.length != 2) {
+            throw new java.lang.IllegalArgumentException();
+        }
+        int x = Integer.parseInt(point[0]);
+        int y = Integer.parseInt(point[1]);
+        
+        return new Point(x, y);
+    }
+    
+    /**
+     * @param args file path.
+     * @return point array.
+     */
+    private static Point[] load(String[] args) {
+        In in = new In(args[0]);
+        int pointNumber = Integer.parseInt(in.readLine());
+        
+        Point[] points = new Point[pointNumber];
+        int index = 0;
+        
+        if (pointNumber > 0) {
+            while (!in.isEmpty() && index < pointNumber) {
+                String line = in.readLine();
+                if (line.trim().length() == 0) {
+                    continue;
+                }
+                points[index++] = createPoint(line);
+            }
+        }
+        
+        in.close();
+        return points;
+    }
+    
+    /**
+     * print out collinear result
+     * @param points array sorted by slope order (first element)
+     * @param start start point index
+     * @param end end point index
+     */
+    private static void printOut(Point[] points, int start, int end) {
+        Arrays.sort(points, start, end);        
+        for (int i = start; i < end; i++) { 
+            StdOut.print(points[i] + " -> ");
+        }
+        StdOut.println(points[0]);
+        
+        points[start].drawTo(points[0]);
+    }
+   
+    /**
+     * @param args file path which contains points info.
+     */
     public static void main(String[] args) {
+        if (args.length != 1) {
+            throw new java.lang.IllegalArgumentException();
+        }
         
-        int n = 0;
+        Point[] points = load(args);
+        Point[] pointsBySlope = new Point[points.length];
         
-        In inputFile;
-        Point[] points;
-        Point lastPoint = null;
-        
-        inputFile = new In(args[0]);
-        
-        // How many points do we have in the input file?
-        n = inputFile.readInt();
-        
-        // Allocate enough space for them
-        points = new Point[n];
-        
-        // Rescale coordinate system for proper visualization.
-        StdDraw.setXscale(0, 32768);
-        StdDraw.setYscale(0, 32768);
-        
-        for (int i = 0; !inputFile.isEmpty(); i++) {
-            int x = inputFile.readInt();
-            int y = inputFile.readInt();
-            
-            points[i] = new Point(x, y);
+        for (int i = 0; i < points.length; i++) {
+            pointsBySlope[i] = points[i];
         }
         
         Arrays.sort(points);
-        
-        Point[] sortedPoints = new Point[n];
-        
-        for (int i = 0; i < n; i++) {
-            // Pick the origin
-            Point p = points[i];
+//        printOut(points, 1, points.length);
+        for (int i = points.length -1; i >= COLNUM - 1; i--) {
+            Point point = points[i];
             
-            p.draw();
+            Arrays.sort(pointsBySlope, 0, pointsBySlope.length, 
+                    point.SLOPE_ORDER);
             
-            // Copy points
-            System.arraycopy(points, 0, sortedPoints, 0, sortedPoints.length);
-            
-            // Sort all points acording that point
-            Arrays.sort(sortedPoints, i, n, p.SLOPE_ORDER);
-            
-            int low = 0,
-                high = 0;
+            int start = 1;
+            double ignoreSlope = point.slopeTo(point);
+            for (int j = 1; j < pointsBySlope.length; j++) {
                 
-            double lastSlope = p.slopeTo(sortedPoints[i]);
-            
-            for (int k = i + 1; k < n; k++) {
+                Point curPoint = pointsBySlope[j];
+                double curSlope = point.slopeTo(curPoint);
+                double lastSlope = point.slopeTo(pointsBySlope[j-1]);
                 
-                double currentSlope = p.slopeTo(sortedPoints[k]);
-                
-                if (currentSlope == lastSlope) {
-                    high++;
-                } else {
-                    if (high - low >= 2 && sortedPoints[high] != lastPoint) {
-                        lastPoint = sortedPoints[high];
-                        
-                        StdOut.print(p);
-                        
-                        for (int j = low; j <= high; j++)
-                            StdOut.print(" -> " + sortedPoints[j]);
-                            
-                        StdOut.println();
-                        
-                        p.drawTo(sortedPoints[high]);
+                if (lastSlope != curSlope) {
+                    if (j - start >= COLNUM - 1) {
+                        printOut(pointsBySlope, start, j);
                     }
                     
-                    low = k;
-                    high = k;
-                    lastSlope = currentSlope;
+                    start = j;
+                }
+                
+                if (point.compareTo(curPoint) < 0) {
+                    ignoreSlope = point.slopeTo(curPoint);
+                }
+                
+                if (ignoreSlope == curSlope) {
+                    start = j + 1;
+                    continue;
                 }
             }
             
-            if (high - low >= 2 && sortedPoints[high] != lastPoint) {
-                lastPoint = sortedPoints[high];
-                
-                StdOut.print(p);
-                
-                for (int j = low; j <= high; j++)
-                    StdOut.print(" -> " + sortedPoints[j]);
-                    
-                StdOut.println();
-                
-                p.drawTo(sortedPoints[high]);
+            if (pointsBySlope.length - start >= COLNUM - 1) {
+                printOut(pointsBySlope, start, pointsBySlope.length);
             }
         }
     }
