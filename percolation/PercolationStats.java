@@ -1,4 +1,3 @@
-
 public class PercolationStats {
   //called with the N and T. Where N is the size of the grid and T is the number
   //of trials that will be run. For each trial, we will calculate the number of 
@@ -6,12 +5,10 @@ public class PercolationStats {
   private int total_sites, trial_size, count;
   private double[] iterations;
   
-  
-  public PercolationStats(int N, int T) 
-// perform T independent computational experiments on an N-by-N grid
-  {
-    checkException(N,T);
-    total_sites = N*N;
+  public PercolationStats(int N, int T) {
+  // perform T independent computational experiments on an N-by-N grid
+    checkException(N, T);
+    total_sites = N * N;
     trial_size = T;
     iterations = new double[T];
     for (int i = 0; i < T; i++) { //perform T iterations
@@ -21,9 +18,9 @@ public class PercolationStats {
         //need to open some random site
         //int row = site_to_open[count] / (N) + 1;
         //int col = site_to_open[count] % (N-1) + 1;
-        int row = StdRandom.uniform(1,N+1);
-        int col = StdRandom.uniform(1,N+1);
-        if (!perc.isOpen(col,row)) {
+        int row = StdRandom.uniform(1, N + 1);
+        int col = StdRandom.uniform(1, N + 1);
+        if (!perc.isOpen(col, row)) {
           count++; //increment count
         }
         perc.open(col, row);
@@ -33,58 +30,48 @@ public class PercolationStats {
     //System.out.println(Arrays.toString(iterations));
   }
   
-   public double mean()                     // sample mean of percolation threshold
-   {
+   public double mean() {                    // sample mean of percolation threshold
      double sum = 0;
      for (int i = 0; i < trial_size; i++) {
        sum += iterations[i];
      }
-     double mean = sum/(double)trial_size;
-     return mean;
+     return sum / (double)trial_size;
    }
    
-   public double stddev()                   // sample standard deviation of percolation threshold
-   {
+   public double stddev() {                  // sample standard deviation of percolation threshold
      double sum = 0;
      double mean = mean();
      for (int i = 0; i < trial_size; i++) {
-       sum += (iterations[i]-mean)*(iterations[i]-mean);
+       sum += (iterations[i] - mean) * (iterations[i] - mean);
      }
-     double stddev = Math.sqrt(sum/((double)trial_size-1));
-     return stddev;
+     return Math.sqrt(sum / (double)(trial_size-1));
    }
    
-   public double confidenceLo()             // returns lower bound of confidence interval
-   {
+   public double confidenceLo() {             // returns lower bound of confidence interval
      double mean = mean();
      double stddev = stddev();
-     return mean-(1.96*stddev/Math.sqrt((double)trial_size));
-     
+     return mean - (1.96 * stddev / Math.sqrt((double)trial_size));
    }
-   public double confidenceHi()             // returns upper bound of confidence interval
-   {
+
+   public double confidenceHi() {             // returns upper bound of confidence interval
      double mean = mean();
      double stddev = stddev();
-     return mean+(1.96*stddev/Math.sqrt((double)trial_size));
+     return mean + (1.96 * stddev / Math.sqrt((double)trial_size));
    }
    
-   private void checkException(int N, int T){
-     if (N <= 0 | T <= 0) {
+   private void checkException(int N, int T) {
+     if (N <= 0 || T <= 0) {
        throw new java.lang.IllegalArgumentException("input needs to be positive values");
      }
    }
    
-   public static void main(String[] args)   // test client, described below
-   {
+   public static void main(String[] args) {  // test client, described below
      int N = Integer.parseInt(args[0]);
      int T = Integer.parseInt(args[1]);
      PercolationStats PS = new PercolationStats(N,T);
-     System.out.println(PS.mean());
-     System.out.println(PS.stddev());
-     System.out.println(PS.confidenceLo());
-     System.out.println(PS.confidenceHi());
+     StdOut.println(PS.mean());
+     StdOut.println(PS.stddev());
+     StdOut.println(PS.confidenceLo());
+     StdOut.println(PS.confidenceHi());
    }
-
-
-
 }
