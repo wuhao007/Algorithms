@@ -8,10 +8,7 @@ public class Deque<Item> implements Iterable<Item> {
   private int size = 0;
 
   // construct an empty deque
-  public Deque() {
-
-  }
-
+  public Deque() { }
 
   private class DequeIterator implements Iterator<Item> {
     private Node current = first;
@@ -26,6 +23,7 @@ public class Deque<Item> implements Iterable<Item> {
       current = current.next;
       return outNode.item;
     }
+
     public void remove() {
       throw new UnsupportedOperationException();
     }
@@ -37,13 +35,15 @@ public class Deque<Item> implements Iterable<Item> {
     private Item item;
   }
 
-
-
   private void checkNullItem(Item item) {
-    if (item == null) throw new NullPointerException();
+    if (item == null) { 
+      throw new NullPointerException();
+    }
   }
   private void checkElementNum() {
-    if (size == 0) throw new NoSuchElementException();
+    if (size == 0) {
+      throw new NoSuchElementException();
+    }
   }
 
 	// is the deque empty?
@@ -72,7 +72,6 @@ public class Deque<Item> implements Iterable<Item> {
     size++;
   }     
 
-
   // insert the item at the end
   public void addLast(Item item) {
     checkNullItem(item);
@@ -88,7 +87,6 @@ public class Deque<Item> implements Iterable<Item> {
     }
     size++;
   }
-
 
 	// delete and return the item at the front
   public Item removeFirst() {
@@ -106,7 +104,6 @@ public class Deque<Item> implements Iterable<Item> {
     return outNode.item;
   }                
 
-
   // delete and return the item at the end
   public Item removeLast() {
     checkElementNum();
@@ -118,11 +115,10 @@ public class Deque<Item> implements Iterable<Item> {
       last = last.prev;
       outNode.prev = null;
       last.next = null;
-   }		
-   size--;
-   return outNode.item;
+    }		
+    size--;
+    return outNode.item;
   }                
-
 
 	// return an iterator over items in order from front to end
   public Iterator<Item> iterator() {
@@ -133,13 +129,11 @@ public class Deque<Item> implements Iterable<Item> {
   public static void main(String[] args) {
     Deque<Integer> deque = new Deque<Integer>();
 
-
     StdOut.println("======== TEST 1 =======");
     StdOut.print("Test Result: ");
     try {
-     deque.removeFirst();
-    }
-    catch (NoSuchElementException ex) {
+      deque.removeFirst();
+    } catch (NoSuchElementException ex) {
       StdOut.println("throw NoSuchElementException exception");
     }
     StdOut.println("Should throw NoSuchElementException exception");
@@ -148,9 +142,8 @@ public class Deque<Item> implements Iterable<Item> {
     StdOut.println("======== TEST 2 =======");
     StdOut.print("Test Result: ");
     try {
-     deque.addFirst(null);
-    }
-    catch (NullPointerException ex) {
+      deque.addFirst(null);
+    } catch (NullPointerException ex) {
       StdOut.println("throw NullPointerException exception");
     }
     StdOut.println("Should throw NullPointerException exception");
@@ -194,7 +187,6 @@ public class Deque<Item> implements Iterable<Item> {
     StdOut.println();
     StdOut.println("Should be 0,3,2,false,1,true");
 
-
     StdOut.println("======== TEST 5 =======");		
     deque.addLast(4);
     deque.addFirst(5);
@@ -205,8 +197,7 @@ public class Deque<Item> implements Iterable<Item> {
     StdOut.print(",");
     try {
      deque.removeFirst();
-    }
-    catch (NoSuchElementException ex) {
+    } catch (NoSuchElementException ex) {
       StdOut.print("throw exception");
     }
     StdOut.println();
@@ -217,12 +208,12 @@ public class Deque<Item> implements Iterable<Item> {
     for (int i = 0; i < 4; i++) {
       deque.addFirst(i);   
     }    
+
     for (int item : deque) {
       StdOut.print(item);
       StdOut.print(",");
     }
     StdOut.println();
     StdOut.println("Should be 3,2,1,0");
-
   }
 }
