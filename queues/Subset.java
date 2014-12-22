@@ -6,8 +6,8 @@ public class Subset {
 
     //StdOut.println(k);
     while (!StdIn.isEmpty()) {
-    str = StdIn.readString();    
-    rq.enqueue(str);      
+      str = StdIn.readString();    
+      rq.enqueue(str);      
     }
     for (int i = 0; i < k; i++) {
       StdOut.println(rq.dequeue());
