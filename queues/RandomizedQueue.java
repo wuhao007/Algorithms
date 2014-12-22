@@ -10,7 +10,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     itemArray = (Item[]) new Object[1];
   }
 
-
   private void resize(int capacity) {
     Item[] newArray = (Item[]) new Object[capacity];
     for (int i = 0; i < size; i++) {
@@ -18,7 +17,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     itemArray = newArray;
   }
-  
 
   // construct an empty randomized queue
   private class RandomizedQueueIterator implements Iterator<Item> {
@@ -36,22 +34,29 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public boolean hasNext() {
       return currentIndex < size;
     }
+
     public Item next() {
-      if (!hasNext()) throw new NoSuchElementException();
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
       return iteratorArray[currentIndex++];
     }
+
     public void remove() {
       throw new UnsupportedOperationException();
     }
   }
 
   private void checkNullItem(Item item) {
-    if (item == null) throw new NullPointerException();
+    if (item == null) { 
+      throw new NullPointerException();
+    }
   }
   private void checkElementNum() {
-    if (size == 0) throw new NoSuchElementException();
+    if (size == 0) {
+      throw new NoSuchElementException();
+    }
   }
-
 
   // is the queue empty?
   public boolean isEmpty() {
@@ -70,7 +75,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     size++;
     //resize 
     if (itemArray.length == size) {
-      resize(size*2);
+      resize(size * 2);
     }
   } 
 
@@ -88,11 +93,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     itemArray[size] = null;
     
-    if (itemArray.length > 1 && size < itemArray.length/4) {
-      resize(itemArray.length/2);
+    if (itemArray.length > 1 && size < itemArray.length / 4) {
+      resize(itemArray.length / 2);
     }
     return item;
   }                    
+
   // return (but do not delete) a random item
   public Item sample() {
     checkElementNum();
@@ -100,11 +106,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     return item;
   }                
 
-
   // return an independent iterator over items in random order
   public Iterator<Item> iterator() {
     return new RandomizedQueueIterator();
   }         
+
   // unit testing
   public static void main(String[] args) {
     RandomizedQueue<Integer> rqueue = new RandomizedQueue<Integer>();
@@ -113,8 +119,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     StdOut.print("Test Result: ");
     try {     
       rqueue.dequeue();
-    }
-    catch (NoSuchElementException ex) {
+    } catch (NoSuchElementException ex) {
       StdOut.println("throw NoSuchElementException exception");
     }
     StdOut.println("Should throw NoSuchElementException exception");    
@@ -124,8 +129,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     StdOut.print("Test Result: ");
     try {
      rqueue.enqueue(null);
-    }
-    catch (NullPointerException ex) {
+    } catch (NullPointerException ex) {
       StdOut.println("throw NullPointerException exception");
     }
     StdOut.println("Should throw NullPointerException exception");
@@ -140,8 +144,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     StdOut.print(",");
     try {     
       rqueue.dequeue();
-    }
-    catch (NoSuchElementException ex) {
+    } catch (NoSuchElementException ex) {
       StdOut.print("throw NoSuchElementException exception");
     }
     StdOut.println();
@@ -165,6 +168,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     for (int i = 0; i < 10; i++) {
       rqueue.enqueue(i);  
     }
+
     for (int i = 0; i < 10; i++) {
       StdOut.print(rqueue.dequeue());
       StdOut.print(",");
@@ -177,6 +181,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     for (int i = 0; i < 2; i++) {
       rqueue.enqueue(i);
     }
+
     for (int i = 0; i < 4; i++) {
       StdOut.print(rqueue.sample());
       StdOut.print(",");
@@ -207,6 +212,5 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
     StdOut.println();
     StdOut.println("Should be 0,1,2,3,");
-
   }   
 }
