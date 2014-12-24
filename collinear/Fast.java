@@ -1,12 +1,5 @@
 import java.util.Arrays;
-
-
-/**
- * @author brlv
- *
- */
 public class Fast {
-    
     /**
      * collinear points number
      */
@@ -88,8 +81,7 @@ public class Fast {
         for (int i = points.length -1; i >= COLNUM - 1; i--) {
             Point point = points[i];
             
-            Arrays.sort(pointsBySlope, 0, pointsBySlope.length, 
-                    point.SLOPE_ORDER);
+            Arrays.sort(pointsBySlope, 0, pointsBySlope.length, point.SLOPE_ORDER);
             
             int start = 1;
             double ignoreSlope = point.slopeTo(point);
@@ -103,17 +95,15 @@ public class Fast {
                     if (j - start >= COLNUM - 1) {
                         printOut(pointsBySlope, start, j);
                     }
-                    
                     start = j;
                 }
                 
                 if (point.compareTo(curPoint) < 0) {
-                    ignoreSlope = point.slopeTo(curPoint);
+                    ignoreSlope = curSlope;
                 }
                 
                 if (ignoreSlope == curSlope) {
                     start = j + 1;
-                    continue;
                 }
             }
             

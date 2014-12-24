@@ -1,11 +1,4 @@
-
-
-/**
- * @author brlv
- *
- */
 public class Brute {
-    
     /**
      * @param pointInfo
      * @return point object
@@ -35,13 +28,11 @@ public class Brute {
         if (pointNumber > 0) {
             while (!in.isEmpty() && index < pointNumber) {
                 String line = in.readLine();
-                if (line.trim().length() == 0) {
-                    continue;
+                if (line.trim().length() != 0) {
+                    points[index++] = createPoint(line);
                 }
-                points[index++] = createPoint(line);
             }
         }
-        
         in.close();
         return points;
     }
@@ -67,18 +58,13 @@ public class Brute {
                     Point p3 = points[k];
                     for (int l = k + 1; l < pointNumber; l++) {
                         Point p4 = points[l];
-                        if ((p1.slopeTo(p2) == p1.slopeTo(p3))
-                                && (p1.slopeTo(p2) == p1.slopeTo(p4))) {
-                            StdOut.println(p1 + " -> " + p2 
-                                    + " -> " + p3 + " -> " + p4);
-                            
+                        if ((p1.slopeTo(p2) == p1.slopeTo(p3)) && (p1.slopeTo(p2) == p1.slopeTo(p4))) {
+                            StdOut.println(p1 + " -> " + p2 + " -> " + p3 + " -> " + p4);
                             p1.drawTo(p4);
                         }
-                        
                     }
                 }
             }
         }
     }
 }
-
