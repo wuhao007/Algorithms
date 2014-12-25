@@ -5,10 +5,11 @@ public class KdTree {
         LeftRight, AboveBelow;
 
         public Orientation next() {
-            if (this.equals(Orientation.AboveBelow))
+            if (this.equals(Orientation.AboveBelow)) {
                 return Orientation.LeftRight;
-
-            return Orientation.AboveBelow;
+            } else { 
+                return Orientation.AboveBelow;
+            }
         }
     }
 
@@ -84,22 +85,18 @@ public class KdTree {
             x.lb = put(x.lb, p, nextOrientation);
             if (x.lb.rect == null) {
                 if (orientation == Orientation.LeftRight) {
-                    x.lb.rect = new RectHV(x.rect.xmin(), x.rect.ymin(),
-                            x.p.x(), x.rect.ymax());
+                    x.lb.rect = new RectHV(x.rect.xmin(), x.rect.ymin(), x.p.x(), x.rect.ymax());
                 } else {
-                    x.lb.rect = new RectHV(x.rect.xmin(), x.rect.ymin(),
-                            x.rect.xmax(), x.p.y());
+                    x.lb.rect = new RectHV(x.rect.xmin(), x.rect.ymin(), x.rect.xmax(), x.p.y());
                 }
             }
         } else {
             x.rt = put(x.rt, p, nextOrientation);
             if (x.rt.rect == null) {
                 if (orientation == Orientation.LeftRight) {
-                    x.rt.rect = new RectHV(x.p.x(), x.rect.ymin(),
-                            x.rect.xmax(), x.rect.ymax());
+                    x.rt.rect = new RectHV(x.p.x(), x.rect.ymin(), x.rect.xmax(), x.rect.ymax());
                 } else {
-                    x.rt.rect = new RectHV(x.rect.xmin(), x.p.y(),
-                            x.rect.xmax(), x.rect.ymax());
+                    x.rt.rect = new RectHV(x.rect.xmin(), x.p.y(), x.rect.xmax(), x.rect.ymax());
                 }
             }
         }
@@ -199,12 +196,10 @@ public class KdTree {
         if (isEmpty()) {
             return null;
         }
-        return findNearest(root, p, root.p, Double.MAX_VALUE,
-                Orientation.LeftRight);
+        return findNearest(root, p, root.p, Double.MAX_VALUE, Orientation.LeftRight);
     }
 
-    private Point2D findNearest(Node x, Point2D p, Point2D nearest,
-            double nearestDistance, Orientation orientation) {
+    private Point2D findNearest(Node x, Point2D p, Point2D nearest, double nearestDistance, Orientation orientation) {
         if (x == null) {
             return nearest;
         }
@@ -235,14 +230,11 @@ public class KdTree {
         }
         Orientation nextOrientation = orientation.next();
         if (first != null && first.rect.distanceSquaredTo(p) < closestDistance) {
-            closest = findNearest(first, p, closest, closestDistance,
-                    nextOrientation);
+            closest = findNearest(first, p, closest, closestDistance, nextOrientation);
             closestDistance = closest.distanceSquaredTo(p);
         }
-        if (second != null
-                && second.rect.distanceSquaredTo(p) < closestDistance) {
-            closest = findNearest(second, p, closest, closestDistance,
-                    nextOrientation);
+        if (second != null && second.rect.distanceSquaredTo(p) < closestDistance) {
+            closest = findNearest(second, p, closest, closestDistance, nextOrientation);
         }
 
         return closest;
